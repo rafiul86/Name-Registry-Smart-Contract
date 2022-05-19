@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: NONE
 
-pragma solidity ^0.8.14;
+pragma solidity ^0.8.0;
 
-contract VanityNameRegistry {
+contract VanityName {
     uint32 public timeLockPeriod;
     uint public lockValue = 1 ether;
     address owner;
@@ -13,7 +13,7 @@ contract VanityNameRegistry {
         locked = false;
     }
     struct Person {
-        string name;
+        bytes32 name;
         uint256 value;
         uint256 time;
         bool isLocked;
@@ -21,16 +21,23 @@ contract VanityNameRegistry {
     mapping(address => Person) nameBook;
     mapping(string => address) ownerByname;
 
-    function registerName(string memory _name) public payable {
+    function registerName(bytes32 _name) public payable {
         require(msg.value >= lockValue, "You need to pay the registration fee");
-        nameBook[msg.sender].name = _name;
-        nameBook[msg.sender].value = msg.value;
-        nameBook[msg.sender].isLocked = true;
-        nameBook[msg.sender].time = block.timestamp + timeLockPeriod;
-        ownerByname[_name] = msg.sender;
+        if (msg.value > lockValue){
+            uint extraValue = msg.value - lockValue;
+            payable(msg.sender).transfer(extraValue);
+            uint remainingValue = msg.value - extraValue;
+            nameBook[msg.sender].name = _name;
+            nameBook[msg.sender].value = remainingValue;
+            nameBook[msg.sender].isLocked = true;
+            nameBook[msg.sender].time = block.timestamp + timeLockPeriod;
+        } else {
+            nameBook[msg.sender].name = _name;
+            nameBook[msg.sender].value = msg.value;
+            nameBook[msg.sender].isLocked = true;
+            nameBook[msg.sender].time = block.timestamp + timeLockPeriod;
+        }        
     }
-
-    
 
     modifier onlyOwner {
         require(msg.sender == owner, "Caller is not owner of registry service");
@@ -53,10 +60,10 @@ contract VanityNameRegistry {
         return address(this).balance;
     }
 
-    function getName(address _ownerAddress) public view returns (string memory) {
+    function getName(address _ownerAddress) public view returns (bytes32) {
         return nameBook[_ownerAddress].name;
     }
-    function getNameCallByOwner() public view returns (string memory) {
+    function getNameCallByOwner() public view returns (bytes32) {
         return nameBook[msg.sender].name;
     }
 
@@ -66,10 +73,13 @@ contract VanityNameRegistry {
 
     function removeName(address _removableNameAddress) external {
         nameBook[_removableNameAddress].name = " ";
+        nameBook[_removableNameAddress].time = 0;
+        nameBook[msg.sender].isLocked = false;
     }
 
     function withDrawLockValue () external {
         require(block.timestamp > nameBook[msg.sender].time, "Too early");
+        require(nameBook[msg.sender].isLocked == false, "Name service in action, wait till expire");
         uint withdrawableBalance = nameBook[msg.sender].value;
         nameBook[msg.sender].value = 0;
         payable(msg.sender).transfer(withdrawableBalance);
