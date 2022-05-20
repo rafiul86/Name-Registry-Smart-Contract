@@ -59,6 +59,7 @@ contract VanityName {
     }
     
     function setOpeartionalStatus(bool _operationalStatus) external onlyOwner {
+        locked = _operationalStatus;
         emit Operational(_operationalStatus);
     }
 
