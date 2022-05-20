@@ -57,7 +57,12 @@ contract VanityName {
     }
 
     function checkExpiry()external{
-
+        for(uint i=0; i <= nameToOwner.length; i++ ){
+            if (nameBook[nameToOwner[i]].time > block.timestamp){
+                nameBook[nameToOwner[i]].name = " ";
+                totalNameRegistry--;
+            }
+        }
     }
 
     function setTimeLockPeriod  (uint32 _timeLockPeriod) external  onlyOwner {
