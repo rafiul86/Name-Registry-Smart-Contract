@@ -101,6 +101,10 @@ contract VanityName {
         return address(this).balance;
     }
 
+    function getOperationalStatus() external view returns(bool){
+        return locked;
+    }
+
     function getName(address _ownerAddress) public view returns (string memory) {
         string memory nameFromBytes = string(nameBook[_ownerAddress].name);
         return nameFromBytes;
