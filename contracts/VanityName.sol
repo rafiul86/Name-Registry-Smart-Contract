@@ -9,7 +9,6 @@ contract VanityName {
     
     constructor(uint32 _timeLockPeriod){
         timeLockPeriod = _timeLockPeriod;
-        
         owner = msg.sender;
         locked = false;
     }
@@ -22,6 +21,19 @@ contract VanityName {
     mapping(address => Person) nameBook;
     mapping(string => address) ownerByname;
 
+    modifier onlyOwner {
+        require(msg.sender == owner, "Caller is not owner of registry service");
+            _;
+    }
+
+    event NameRegistered(address indexed caller, bytes indexed name, uint256 value);
+    event NameUnregistered(address indexed caller, bytes indexed name);
+    event NameChanged(address indexed caller, bytes indexed name, uint256 value);
+    event SetTimePeriod(uint32 timeLockPeriod);
+    event BalanceWithdwalFromAccount(address indexed caller, uint256 value);
+    event BalanceWithdwalByNameHolder(address indexed caller, uint256 value);
+    event NameRemoval(address indexed caller, bytes indexed name);
+    event Operational(bool operationalStatus);
 
     function setLockedValue(string memory _myString) pure private returns (uint) {
         bytes memory sizeOfString = bytes(_myString);
@@ -29,32 +41,62 @@ contract VanityName {
         return valueForLock;
     }
 
-
     function registerName(string memory _name) public payable {
+        require(!locked, "Account is locked");
         uint valueForLock = setLockedValue(_name);
         require(msg.value >= valueForLock, "Not enough value to register name");
         bytes memory nameFromString = bytes(_name);
                 nameBook[msg.sender].name = nameFromString;
                 nameBook[msg.sender].value = msg.value;
                 nameBook[msg.sender].isLocked = true;
-                nameBook[msg.sender].time = block.timestamp + timeLockPeriod;        
-    }
-
-    modifier onlyOwner {
-        require(msg.sender == owner, "Caller is not owner of registry service");
-            _;
+                nameBook[msg.sender].time = block.timestamp + timeLockPeriod;   
+        emit NameRegistered(msg.sender, nameFromString, msg.value);     
     }
 
     function setTimeLockPeriod  (uint32 _timeLockPeriod) external  onlyOwner {
         timeLockPeriod = _timeLockPeriod;
+        emit SetTimePeriod(timeLockPeriod);
     }
-   
-    function withdraw () external onlyOwner {
-      require(address(this).balance > 0, "Balance is zero");
-      payable (msg.sender).transfer(address(this).balance);
+    
+    function setOpeartionalStatus(bool _operationalStatus) external onlyOwner {
+        emit Operational(_operationalStatus);
     }
 
-    function checkBalance() external view returns (uint) {
+    function withdrawAccountBalance () external onlyOwner {
+      require(!locked, "Account is locked");
+      require(address(this).balance > 0, "Balance is zero");
+      payable (msg.sender).transfer(address(this).balance);
+      emit BalanceWithdwalFromAccount(msg.sender, address(this).balance);
+    }
+
+    function removeName(address _removableNameAddress) external {
+        require(!locked, "Account is locked");
+        nameBook[_removableNameAddress].name = " ";
+        nameBook[_removableNameAddress].time = 0;
+        nameBook[msg.sender].isLocked = false;
+        emit NameRemoval(msg.sender, nameBook[_removableNameAddress].name);
+    }
+
+    function withDrawLockValue () external {
+        require(!locked, "Account is locked");
+        require(block.timestamp > nameBook[msg.sender].time, "Too early");
+        require(!nameBook[msg.sender].isLocked, "Name service in action, wait till expire");
+        uint withdrawableBalance = nameBook[msg.sender].value;
+        nameBook[msg.sender].value = 0;
+        payable(msg.sender).transfer(withdrawableBalance);
+        emit BalanceWithdwalByNameHolder(msg.sender, withdrawableBalance);
+    }
+
+    function getOwner(string memory _name) public view returns (address) {
+        return ownerByname[_name];
+    }
+
+    function getBytesSize(string memory _myString) pure external returns(uint){
+        bytes memory sizeOfString = bytes(_myString);
+        return sizeOfString.length;
+    }
+
+    function getContractBalance() external view returns (uint) {
         return address(this).balance;
     }
 
@@ -71,30 +113,6 @@ contract VanityName {
         return nameBook[_owner].value;
     }
 
-    function removeName(address _removableNameAddress) external {
-        nameBook[_removableNameAddress].name = " ";
-        nameBook[_removableNameAddress].time = 0;
-        nameBook[msg.sender].isLocked = false;
-    }
-
-    function withDrawLockValue () external {
-        require(block.timestamp > nameBook[msg.sender].time, "Too early");
-        require(nameBook[msg.sender].isLocked == false, "Name service in action, wait till expire");
-        uint withdrawableBalance = nameBook[msg.sender].value;
-        nameBook[msg.sender].value = 0;
-        payable(msg.sender).transfer(withdrawableBalance);
-    }
-
-    function getOwner(string memory _name) public view returns (address) {
-        return ownerByname[_name];
-    }
-
-    function getBytesSize(string memory _myString) pure external returns(uint){
-        bytes memory sizeOfString = bytes(_myString);
-        return sizeOfString.length;
-    }
-
-    
     fallback () external payable {
 
     }
