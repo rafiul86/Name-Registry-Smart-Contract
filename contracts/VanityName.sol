@@ -1,25 +1,27 @@
 // SPDX-License-Identifier: NONE
-
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+
 contract VanityName {
-    uint32 public timeLockPeriod;
+    using SafeMath for uint256;
+    using SafeMath for uint;
+    uint public timeLockPeriod;
     address owner;
     bool locked;
-    uint public totalNameRegistry;
     address  [] public  nameToOwner;
     constructor(uint32 _timeLockPeriod){
         timeLockPeriod = _timeLockPeriod;
         owner = msg.sender;
         locked = false;
     }
-    struct Person {
+    struct NameBook {
         bytes name;
         uint256 value;
         uint256 time;
         bool isLocked;
     }
-    mapping(address => Person) nameBook;
+    mapping(address => NameBook) nameBook;
     mapping(string => address) ownerByname;
 
     modifier onlyOwner {
@@ -30,7 +32,7 @@ contract VanityName {
     event NameRegistered(address indexed caller, bytes indexed name, uint256 value);
     event NameUnregistered(address indexed caller, bytes indexed name);
     event NameChanged(address indexed caller, bytes indexed name, uint256 value);
-    event SetTimePeriod(uint32 timeLockPeriod);
+    event SetTimePeriod(uint timeLockPeriod);
     event BalanceWithdwalFromAccount(address indexed caller, uint256 value);
     event BalanceWithdwalByNameHolder(address indexed caller, uint256 value);
     event NameRemoval(address indexed caller, bytes indexed name);
@@ -47,12 +49,10 @@ contract VanityName {
         require(msg.value >= valueForLock, "Not enough value to register name");
         require(!locked, "Account is locked");
         bytes memory nameFromString = bytes(_name);
-                nameBook[msg.sender].name = nameFromString;
-                nameBook[msg.sender].value = msg.value;
-                nameBook[msg.sender].isLocked = true;
-                nameBook[msg.sender].time = block.timestamp + timeLockPeriod; 
-                nameToOwner.push(msg.sender);
-                totalNameRegistry++;  
+        uint256 timeLock =  timeLockPeriod.add(block.timestamp);
+        nameBook[msg.sender] = NameBook({name: nameFromString, value: msg.value, time: timeLock, isLocked: true});
+        nameToOwner.push(msg.sender);
+        ownerByname[_name] = msg.sender;
         emit NameRegistered(msg.sender, nameFromString, msg.value);     
     }
 
@@ -63,12 +63,11 @@ contract VanityName {
                 nameBook[nameToOwner[i]].time = 0;
                 nameBook[nameToOwner[i]].isLocked = false;
                 delete nameToOwner[i];
-                totalNameRegistry--;
             }
         }
     }
 
-    function setTimeLockPeriod  (uint32 _timeLockPeriod) external  onlyOwner {
+    function setTimeLockPeriod  (uint _timeLockPeriod) external  onlyOwner {
         timeLockPeriod = _timeLockPeriod;
         emit SetTimePeriod(timeLockPeriod);
     }
@@ -90,7 +89,6 @@ contract VanityName {
         nameBook[_removableNameAddress].name = " ";
         nameBook[_removableNameAddress].time = 0;
         nameBook[msg.sender].isLocked = false;
-        totalNameRegistry--;
         emit NameRemoval(msg.sender, nameBook[_removableNameAddress].name);
     }
 
@@ -115,6 +113,10 @@ contract VanityName {
 
     function getContractBalance() public view returns (uint) {
         return address(this).balance;
+    }
+
+    function getNameRegistryUserLength() public view returns (uint) {
+        return nameToOwner.length;
     }
 
     function getOperationalStatus() public view returns(bool){
