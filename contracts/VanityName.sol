@@ -6,8 +6,10 @@ contract VanityName {
     uint32 public timeLockPeriod;
     address owner;
     bool locked;
+    
     constructor(uint32 _timeLockPeriod){
         timeLockPeriod = _timeLockPeriod;
+        
         owner = msg.sender;
         locked = false;
     }
@@ -20,80 +22,22 @@ contract VanityName {
     mapping(address => Person) nameBook;
     mapping(string => address) ownerByname;
 
+
+    function setLockedValue(string memory _myString) pure private returns (uint) {
+        bytes memory sizeOfString = bytes(_myString);
+        uint valueForLock = uint(sizeOfString.length) * 10**17;
+        return valueForLock;
+    }
+
+
     function registerName(string memory _name) public payable {
+        uint valueForLock = setLockedValue(_name);
+        require(msg.value >= valueForLock, "Not enough value to register name");
         bytes memory nameFromString = bytes(_name);
-        uint lockValue;
-        require(msg.value >= lockValue, "You need to pay the registration fee");
-        if (nameFromString.length >= 8) {
-            lockValue = 1 ether;
-            
-            if (msg.value > lockValue){
-                uint extraValue = msg.value - lockValue;
-                payable(msg.sender).transfer(extraValue);
-                uint remainingValue = msg.value - extraValue;
-                nameBook[msg.sender].name = nameFromString;
-                nameBook[msg.sender].value = remainingValue;
-                nameBook[msg.sender].isLocked = true;
-                nameBook[msg.sender].time = block.timestamp + timeLockPeriod;
-            } else {
                 nameBook[msg.sender].name = nameFromString;
                 nameBook[msg.sender].value = msg.value;
                 nameBook[msg.sender].isLocked = true;
-                nameBook[msg.sender].time = block.timestamp + timeLockPeriod;
-            }        
-        } else if (nameFromString.length >= 16) {
-            lockValue = 2 ether;
-        
-            if (msg.value > lockValue){
-                uint extraValue = msg.value - lockValue;
-                payable(msg.sender).transfer(extraValue);
-                uint remainingValue = msg.value - extraValue;
-                nameBook[msg.sender].name = nameFromString;
-                nameBook[msg.sender].value = remainingValue;
-                nameBook[msg.sender].isLocked = true;
-                nameBook[msg.sender].time = block.timestamp + timeLockPeriod;
-            } else {
-                nameBook[msg.sender].name = nameFromString;
-                nameBook[msg.sender].value = msg.value;
-                nameBook[msg.sender].isLocked = true;
-                nameBook[msg.sender].time = block.timestamp + timeLockPeriod;
-            }        
-        }else if (nameFromString.length >= 32){
-            lockValue = 3 ether;
-        
-        if (msg.value > lockValue){
-            uint extraValue = msg.value - lockValue;
-            payable(msg.sender).transfer(extraValue);
-            uint remainingValue = msg.value - extraValue;
-            nameBook[msg.sender].name = nameFromString;
-            nameBook[msg.sender].value = remainingValue;
-            nameBook[msg.sender].isLocked = true;
-            nameBook[msg.sender].time = block.timestamp + timeLockPeriod;
-        } else {
-            nameBook[msg.sender].name = nameFromString;
-            nameBook[msg.sender].value = msg.value;
-            nameBook[msg.sender].isLocked = true;
-            nameBook[msg.sender].time = block.timestamp + timeLockPeriod;
-        }        
-        } else {
-            lockValue = 4 ether;
-        
-        if (msg.value > lockValue){
-            uint extraValue = msg.value - lockValue;
-            payable(msg.sender).transfer(extraValue);
-            uint remainingValue = msg.value - extraValue;
-            nameBook[msg.sender].name = nameFromString;
-            nameBook[msg.sender].value = remainingValue;
-            nameBook[msg.sender].isLocked = true;
-            nameBook[msg.sender].time = block.timestamp + timeLockPeriod;
-        } else {
-            nameBook[msg.sender].name = nameFromString;
-            nameBook[msg.sender].value = msg.value;
-            nameBook[msg.sender].isLocked = true;
-            nameBook[msg.sender].time = block.timestamp + timeLockPeriod;
-        }        
-        }
-        
+                nameBook[msg.sender].time = block.timestamp + timeLockPeriod;        
     }
 
     modifier onlyOwner {
@@ -150,7 +94,7 @@ contract VanityName {
         return sizeOfString.length;
     }
 
-
+    
     fallback () external payable {
 
     }
