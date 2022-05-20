@@ -6,7 +6,8 @@ contract VanityName {
     uint32 public timeLockPeriod;
     address owner;
     bool locked;
-    
+    uint public totalNameRegistry;
+    address  [] public  nameToOwner;
     constructor(uint32 _timeLockPeriod){
         timeLockPeriod = _timeLockPeriod;
         owner = msg.sender;
@@ -49,8 +50,14 @@ contract VanityName {
                 nameBook[msg.sender].name = nameFromString;
                 nameBook[msg.sender].value = msg.value;
                 nameBook[msg.sender].isLocked = true;
-                nameBook[msg.sender].time = block.timestamp + timeLockPeriod;   
+                nameBook[msg.sender].time = block.timestamp + timeLockPeriod; 
+                nameToOwner.push(msg.sender);
+                totalNameRegistry++;  
         emit NameRegistered(msg.sender, nameFromString, msg.value);     
+    }
+
+    function checkExpiry()external{
+
     }
 
     function setTimeLockPeriod  (uint32 _timeLockPeriod) external  onlyOwner {
@@ -70,11 +77,12 @@ contract VanityName {
       emit BalanceWithdwalFromAccount(msg.sender, address(this).balance);
     }
 
-    function removeName(address _removableNameAddress) external {
+    function removeName(address _removableNameAddress) external onlyOwner {
         require(!locked, "Account is locked");
         nameBook[_removableNameAddress].name = " ";
         nameBook[_removableNameAddress].time = 0;
         nameBook[msg.sender].isLocked = false;
+        totalNameRegistry--;
         emit NameRemoval(msg.sender, nameBook[_removableNameAddress].name);
     }
 
