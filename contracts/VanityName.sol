@@ -56,10 +56,12 @@ contract VanityName {
         emit NameRegistered(msg.sender, nameFromString, msg.value);     
     }
 
-    function checkExpiry()external{
+    function checkExpiry()external onlyOwner{
         for(uint i=0; i <= nameToOwner.length; i++ ){
             if (nameBook[nameToOwner[i]].time > block.timestamp){
                 nameBook[nameToOwner[i]].name = " ";
+                nameBook[nameToOwner[i]].time = 0;
+                nameBook[nameToOwner[i]].isLocked = false;
                 totalNameRegistry--;
             }
         }
@@ -105,16 +107,16 @@ contract VanityName {
         return ownerByname[_name];
     }
 
-    function getBytesSize(string memory _myString) pure external returns(uint){
+    function getBytesSize(string memory _myString) pure public returns(uint){
         bytes memory sizeOfString = bytes(_myString);
         return sizeOfString.length;
     }
 
-    function getContractBalance() external view returns (uint) {
+    function getContractBalance() public view returns (uint) {
         return address(this).balance;
     }
 
-    function getOperationalStatus() external view returns(bool){
+    function getOperationalStatus() public view returns(bool){
         return locked;
     }
 
