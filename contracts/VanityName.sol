@@ -4,7 +4,6 @@ pragma solidity ^0.8.0;
 
 contract VanityName {
     uint32 public timeLockPeriod;
-    uint public lockValue = 0.0001 ether;
     address owner;
     bool locked;
     constructor(uint32 _timeLockPeriod){
@@ -22,8 +21,46 @@ contract VanityName {
     mapping(string => address) ownerByname;
 
     function registerName(string memory _name) public payable {
+        bytes memory nameFromString = bytes(_name);
+        uint lockValue;
         require(msg.value >= lockValue, "You need to pay the registration fee");
-       bytes memory nameFromString = bytes(_name);
+        if (nameFromString.length >= 8) {
+            lockValue = 1 ether;
+            
+            if (msg.value > lockValue){
+                uint extraValue = msg.value - lockValue;
+                payable(msg.sender).transfer(extraValue);
+                uint remainingValue = msg.value - extraValue;
+                nameBook[msg.sender].name = nameFromString;
+                nameBook[msg.sender].value = remainingValue;
+                nameBook[msg.sender].isLocked = true;
+                nameBook[msg.sender].time = block.timestamp + timeLockPeriod;
+            } else {
+                nameBook[msg.sender].name = nameFromString;
+                nameBook[msg.sender].value = msg.value;
+                nameBook[msg.sender].isLocked = true;
+                nameBook[msg.sender].time = block.timestamp + timeLockPeriod;
+            }        
+        } else if (nameFromString.length >= 16) {
+            lockValue = 2 ether;
+        
+            if (msg.value > lockValue){
+                uint extraValue = msg.value - lockValue;
+                payable(msg.sender).transfer(extraValue);
+                uint remainingValue = msg.value - extraValue;
+                nameBook[msg.sender].name = nameFromString;
+                nameBook[msg.sender].value = remainingValue;
+                nameBook[msg.sender].isLocked = true;
+                nameBook[msg.sender].time = block.timestamp + timeLockPeriod;
+            } else {
+                nameBook[msg.sender].name = nameFromString;
+                nameBook[msg.sender].value = msg.value;
+                nameBook[msg.sender].isLocked = true;
+                nameBook[msg.sender].time = block.timestamp + timeLockPeriod;
+            }        
+        }else if (nameFromString.length >= 32){
+            lockValue = 3 ether;
+        
         if (msg.value > lockValue){
             uint extraValue = msg.value - lockValue;
             payable(msg.sender).transfer(extraValue);
@@ -38,18 +75,25 @@ contract VanityName {
             nameBook[msg.sender].isLocked = true;
             nameBook[msg.sender].time = block.timestamp + timeLockPeriod;
         }        
-    }
-
-    function bytes32ToString(bytes32 _bytes32) public pure returns (string memory) {
-        uint8 i = 0;
-        while(i < 32 && _bytes32[i] != 0) {
-            i++;
+        } else {
+            lockValue = 4 ether;
+        
+        if (msg.value > lockValue){
+            uint extraValue = msg.value - lockValue;
+            payable(msg.sender).transfer(extraValue);
+            uint remainingValue = msg.value - extraValue;
+            nameBook[msg.sender].name = nameFromString;
+            nameBook[msg.sender].value = remainingValue;
+            nameBook[msg.sender].isLocked = true;
+            nameBook[msg.sender].time = block.timestamp + timeLockPeriod;
+        } else {
+            nameBook[msg.sender].name = nameFromString;
+            nameBook[msg.sender].value = msg.value;
+            nameBook[msg.sender].isLocked = true;
+            nameBook[msg.sender].time = block.timestamp + timeLockPeriod;
+        }        
         }
-        bytes memory bytesArray = new bytes(i);
-        for (i = 0; i < 32 && _bytes32[i] != 0; i++) {
-            bytesArray[i] = _bytes32[i];
-        }
-        return string(bytesArray);
+        
     }
 
     modifier onlyOwner {
@@ -60,10 +104,7 @@ contract VanityName {
     function setTimeLockPeriod  (uint32 _timeLockPeriod) external  onlyOwner {
         timeLockPeriod = _timeLockPeriod;
     }
-    function setLockValue  (uint _lockValue) external  onlyOwner {
-        lockValue = _lockValue;
-    }
-
+   
     function withdraw () external onlyOwner {
       require(address(this).balance > 0, "Balance is zero");
       payable (msg.sender).transfer(address(this).balance);
@@ -103,6 +144,12 @@ contract VanityName {
     function getOwner(string memory _name) public view returns (address) {
         return ownerByname[_name];
     }
+
+    function getBytesSize(string memory _myString) pure external returns(uint){
+        bytes memory sizeOfString = bytes(_myString);
+        return sizeOfString.length;
+    }
+
 
     fallback () external payable {
 
