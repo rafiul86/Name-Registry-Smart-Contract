@@ -42,9 +42,9 @@ contract VanityName {
     }
 
     function registerName(string memory _name) public payable {
-        require(!locked, "Account is locked");
         uint valueForLock = setLockedValue(_name);
         require(msg.value >= valueForLock, "Not enough value to register name");
+        require(!locked, "Account is locked");
         bytes memory nameFromString = bytes(_name);
                 nameBook[msg.sender].name = nameFromString;
                 nameBook[msg.sender].value = msg.value;
