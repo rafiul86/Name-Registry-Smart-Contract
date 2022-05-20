@@ -37,7 +37,7 @@ contract VanityName {
 
     function setLockedValue(string memory _myString) pure private returns (uint) {
         bytes memory sizeOfString = bytes(_myString);
-        uint valueForLock = uint(sizeOfString.length) * 10**17;
+        uint valueForLock = uint(sizeOfString.length) * 10**18;
         return valueForLock;
     }
 
