@@ -57,11 +57,12 @@ contract VanityName {
     }
 
     function checkExpiry()external onlyOwner{
-        for(uint i=0; i <= nameToOwner.length; i++ ){
+        for(uint i=0; i < nameToOwner.length; i++ ){
             if (nameBook[nameToOwner[i]].time > block.timestamp){
                 nameBook[nameToOwner[i]].name = " ";
                 nameBook[nameToOwner[i]].time = 0;
                 nameBook[nameToOwner[i]].isLocked = false;
+                delete nameToOwner[i];
                 totalNameRegistry--;
             }
         }
