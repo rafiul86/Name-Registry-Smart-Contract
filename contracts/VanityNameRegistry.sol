@@ -171,7 +171,12 @@ contract VanityNameRegistry {
         nameToOwner.push(msg.sender);
         ownerByname[_name] = msg.sender;
         nameCount++;
-        emit NameRegistered(msg.sender, nameFromString, lockValue);     
+        emit NameRegistered(msg.sender, nameFromString, lockValue);  
+        if (msg.value > valueForLock) {
+            // extra amount paid by the user should be refunded
+            (bool success, ) = payable(msg.sender).call{value: msg.value - valueForLock}("");
+            require(success, "refund not succcessful");
+        }   
     }
 
     function checkExpiry()external onlyOwner{
@@ -216,7 +221,7 @@ contract VanityNameRegistry {
         require(!locked, "Account is locked");
         require(block.timestamp > nameBook[msg.sender].time, "Too early");
         require(!nameBook[msg.sender].isLocked, "Name service in action, wait till expire");
-        require(msg.value <= nameBook[msg.sender].value, "locked value exceeds");
+        require(nameBook[msg.sender].value > 0, "locked value exceeds");
         uint withdrawableBalance = nameBook[msg.sender].value;
         nameBook[msg.sender].value = 0;
         payable(msg.sender).transfer(withdrawableBalance);
