@@ -120,58 +120,82 @@ contract VanityNameRegistry {
     // using openzeppelin safemath to prevent overflow and underflow of integers math operation
     using SafeMath for uint256;
     using SafeMath for uint;
-    uint public timeLockPeriod;
+    uint public timeLockPeriod = 604800; // 7 days
+    uint64 constant minimumDelayPeriod = 60;
+    uint64 constant maximumDelayPeriod = 24*60*60;
     uint lockValue = 3 ether;
     uint nameCount;
     address public owner;
     bool locked;
-    address [] public nameToOwner;
+    bytes32 [] public nameToOwner;
     constructor(uint32 _timeLockPeriod){
         timeLockPeriod = _timeLockPeriod;
         owner = msg.sender;
         locked = false;
     }
-    struct NameBook {
-        bytes name;
+    struct NameRecord {
+        address ownerOfName;
+        bytes32 name;
         uint256 value;
-        uint256 time;
+        uint256 endPeriod;
         bool isLocked;
     }
-    mapping(address => NameBook) nameBook;
-    mapping(string => address) ownerByname;
+    
+    mapping(bytes32 => NameRecord) public nameRecord;
+    mapping (bytes32 => uint) preventFrontRun;
 
     modifier onlyOwner {
         require(msg.sender == owner, "Caller is not owner of registry service");
             _;
     }
 
-    event NameRegistered(address indexed caller, bytes indexed name, uint256 value);
-    event NameUnregistered(address indexed caller, bytes indexed name);
-    event NameChanged(address indexed caller, bytes indexed name, uint256 value);
+    event NameRegistered(address indexed caller, bytes32 indexed name, uint256 value);
+    event NameUnregistered(address indexed caller, bytes32 indexed name);
+    event NameChanged(address indexed caller, bytes32 indexed name, uint256 value);
     event SetTimePeriod(uint timeLockPeriod);
     event BalanceWithdwalFromAccount(address indexed caller, uint256 value);
     event BalanceWithdwalByNameHolder(address indexed caller, uint256 value);
-    event NameRemoval(address indexed caller, bytes indexed name);
+    event NameRemoval(address indexed caller, bytes32 indexed name);
+    event Renewal(bytes32 indexed name, uint256 value);
     event Operational(bool operationalStatus);
 
-    function setregistrationFee(string memory _myString) pure private returns (uint) {
-        bytes memory sizeOfString = bytes(_myString);
-        uint valueForLock = uint(sizeOfString.length) * 10**18;
-        return valueForLock;
+    function calculateregistrationFee(string calldata name) public pure returns (uint64) {
+        return uint64(bytes(name).length) * 10**16;
     }
 
-    function registerName(string memory _name) public payable {
-        uint registrationFee = setregistrationFee(_name);
+     function isNameAvailable(bytes32  _name) public view returns (address) {
+        return nameRecord[_name].ownerOfName;
+    }
+
+     function checkFrontRunConditions(bytes32 _condition) public {
+        require(preventFrontRun[_condition].add(minimumDelayPeriod) <= block.timestamp);
+        require(preventFrontRun[_condition].add(maximumDelayPeriod) > block.timestamp);
+        delete(preventFrontRun[_condition]);
+    }
+
+    function generateCondition(string memory _name, bytes32 _key) public view  returns (bytes32) {
+        return keccak256(abi.encodePacked(keccak256(bytes(_name)), msg.sender, _key));
+    }
+
+    function condition(bytes32 _condition) public {
+        require(preventFrontRun[_condition].add(maximumDelayPeriod) < block.timestamp, "ondition  exists");
+        preventFrontRun[_condition] = block.timestamp;
+    }
+
+    function registerName(string calldata _name, bytes32 _secretKey) public payable {
+        bytes32 nameForRgistration = keccak256(bytes(_name));
+        require(isNameAvailable(nameForRgistration) == address(0), "name is not available for registration");
+        bytes32 conditionToPreventFrontRun = generateCondition(_name, _secretKey);
+        checkFrontRunConditions(conditionToPreventFrontRun);
+        uint registrationFee = calculateregistrationFee(_name);
         uint valueForLock = lockValue.add(registrationFee);
         require(msg.value >= valueForLock, "Not enough value to register name");
         require(!locked, "Account is locked");
-        bytes memory nameFromString = bytes(_name);
         uint256 timeLock =  timeLockPeriod.add(block.timestamp);
-        nameBook[msg.sender] = NameBook({name: nameFromString, value: lockValue, time: timeLock, isLocked: true});
-        nameToOwner.push(msg.sender);
-        ownerByname[_name] = msg.sender;
+        nameRecord[nameForRgistration] = NameRecord({ownerOfName: msg.sender, name: nameForRgistration, value: lockValue, endPeriod: timeLock, isLocked: true});
+        nameToOwner.push(nameForRgistration);
         nameCount++;
-        emit NameRegistered(msg.sender, nameFromString, lockValue);  
+        emit NameRegistered(msg.sender, nameForRgistration, lockValue);  
         if (msg.value > valueForLock) {
             // extra amount paid by the user should be refunded
             (bool success, ) = payable(msg.sender).call{value: msg.value - valueForLock}("");
@@ -179,16 +203,24 @@ contract VanityNameRegistry {
         }   
     }
 
-    function checkExpiry()external onlyOwner{
+    function resetExpiredNameFromRecord()external onlyOwner{
         for(uint i=0; i < nameToOwner.length; i++ ){
-            if (nameBook[nameToOwner[i]].time < block.timestamp){
-                nameBook[nameToOwner[i]].name = " ";
-                nameBook[nameToOwner[i]].time = 0;
-                nameBook[nameToOwner[i]].isLocked = false;
+            if (nameRecord[nameToOwner[i]].endPeriod < block.timestamp){
+                nameRecord[nameToOwner[i]].name = " ";
+                nameRecord[nameToOwner[i]].endPeriod = 0;
+                nameRecord[nameToOwner[i]].isLocked = false;
                 delete nameToOwner[i];
                 nameCount--;
             }
         }
+    }
+
+    function renewalOfName(string calldata _name) external {
+        bytes32 nameForRenew = keccak256(bytes(_name));
+        require(nameRecord[nameForRenew].ownerOfName == msg.sender, "you are not owner of this name");
+        require(nameRecord[nameForRenew].endPeriod > block.timestamp, "Name is expired");
+        nameRecord[nameForRenew].endPeriod += timeLockPeriod;
+        emit Renewal(nameForRenew, nameRecord[nameForRenew].endPeriod);
     }
 
     function setTimeLockPeriod  (uint _timeLockPeriod) external  onlyOwner {
@@ -208,28 +240,29 @@ contract VanityNameRegistry {
       emit BalanceWithdwalFromAccount(msg.sender, address(this).balance);
     }
 
-    function removeName(address _removableNameAddress) external onlyOwner {
+    function removeName(string calldata _name) external onlyOwner {
         require(!locked, "Account is locked");
-        nameBook[_removableNameAddress].name = " ";
-        nameBook[_removableNameAddress].time = 0;
-        nameBook[msg.sender].isLocked = false;
+        bytes32 nameForRemoval = keccak256(bytes(_name));
+        nameRecord[nameForRemoval].name = " ";
+        nameRecord[nameForRemoval].endPeriod = 0;
+        nameRecord[nameForRemoval].ownerOfName = address(0);
+        nameRecord[nameForRemoval].isLocked = false;
         nameCount--;
-        emit NameRemoval(msg.sender, nameBook[_removableNameAddress].name);
+        emit NameRemoval(msg.sender, nameRecord[nameForRemoval].name);
     }
 
-    function withDrawLockValue () external payable {
+    function withDrawLockValue (string calldata _name) external payable {
         require(!locked, "Account is locked");
-        require(block.timestamp > nameBook[msg.sender].time, "Too early");
-        require(!nameBook[msg.sender].isLocked, "Name service in action, wait till expire");
-        require(nameBook[msg.sender].value > 0, "locked value exceeds");
-        uint withdrawableBalance = nameBook[msg.sender].value;
-        nameBook[msg.sender].value = 0;
+        bytes32 nameForWithdrawalValue = keccak256(bytes(_name));
+        require(!locked, "Contract is locked");
+        require(nameRecord[nameForWithdrawalValue].ownerOfName == msg.sender, "Only owner can withdraw");
+        require(block.timestamp > nameRecord[nameForWithdrawalValue].endPeriod, "Too early");
+        require(!nameRecord[nameForWithdrawalValue].isLocked, "Name service in action, wait till expire");
+
+        uint withdrawableBalance = nameRecord[nameForWithdrawalValue].value;
+        nameRecord[nameForWithdrawalValue].value = 0;
         payable(msg.sender).transfer(withdrawableBalance);
         emit BalanceWithdwalByNameHolder(msg.sender, withdrawableBalance);
-    }
-
-    function getOwner(string memory _name) public view returns (address) {
-        return ownerByname[_name];
     }
 
     function getContractBalance() public view returns (uint) {
@@ -242,19 +275,6 @@ contract VanityNameRegistry {
 
     function getOperationalStatus() public view returns(bool){
         return locked;
-    }
-
-    function getName(address _ownerAddress) public view returns (string memory) {
-        string memory nameFromBytes = string(nameBook[_ownerAddress].name);
-        return nameFromBytes;
-    }
-    function getNameCallByOwner() public view returns (string memory) {
-        string memory nameFromBytes = string(nameBook[msg.sender].name);
-        return nameFromBytes;
-    }
-
-    function getValue(address _owner) public view returns (uint256) {
-        return nameBook[_owner].value;
     }
 
     fallback () external payable {
