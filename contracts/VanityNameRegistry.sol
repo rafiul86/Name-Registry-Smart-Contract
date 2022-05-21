@@ -7,18 +7,7 @@ pragma solidity ^0.8.0;
 // This version of SafeMath should only be used with Solidity 0.8 or later,
 // because it relies on the compiler's built in overflow checks.
 
-/**
- * @dev Wrappers over Solidity's arithmetic operations.
- *
- * NOTE: `SafeMath` is generally not needed starting with Solidity 0.8, since the compiler
- * now has built in overflow checking.
- */
 library SafeMath {
-    /**
-     * @dev Returns the addition of two unsigned integers, with an overflow flag.
-     *
-     * _Available since v3.4._
-     */
     function tryAdd(uint256 a, uint256 b) internal pure returns (bool, uint256) {
         unchecked {
             uint256 c = a + b;
@@ -27,11 +16,7 @@ library SafeMath {
         }
     }
 
-    /**
-     * @dev Returns the subtraction of two unsigned integers, with an overflow flag.
-     *
-     * _Available since v3.4._
-     */
+    
     function trySub(uint256 a, uint256 b) internal pure returns (bool, uint256) {
         unchecked {
             if (b > a) return (false, 0);
@@ -39,11 +24,8 @@ library SafeMath {
         }
     }
 
-    /**
-     * @dev Returns the multiplication of two unsigned integers, with an overflow flag.
-     *
-     * _Available since v3.4._
-     */
+   
+ 
     function tryMul(uint256 a, uint256 b) internal pure returns (bool, uint256) {
         unchecked {
             // Gas optimization: this is cheaper than requiring 'a' not being zero, but the
@@ -56,11 +38,7 @@ library SafeMath {
         }
     }
 
-    /**
-     * @dev Returns the division of two unsigned integers, with a division by zero flag.
-     *
-     * _Available since v3.4._
-     */
+  
     function tryDiv(uint256 a, uint256 b) internal pure returns (bool, uint256) {
         unchecked {
             if (b == 0) return (false, 0);
@@ -68,11 +46,7 @@ library SafeMath {
         }
     }
 
-    /**
-     * @dev Returns the remainder of dividing two unsigned integers, with a division by zero flag.
-     *
-     * _Available since v3.4._
-     */
+   
     function tryMod(uint256 a, uint256 b) internal pure returns (bool, uint256) {
         unchecked {
             if (b == 0) return (false, 0);
@@ -80,91 +54,31 @@ library SafeMath {
         }
     }
 
-    /**
-     * @dev Returns the addition of two unsigned integers, reverting on
-     * overflow.
-     *
-     * Counterpart to Solidity's `+` operator.
-     *
-     * Requirements:
-     *
-     * - Addition cannot overflow.
-     */
+  
     function add(uint256 a, uint256 b) internal pure returns (uint256) {
         return a + b;
     }
 
-    /**
-     * @dev Returns the subtraction of two unsigned integers, reverting on
-     * overflow (when the result is negative).
-     *
-     * Counterpart to Solidity's `-` operator.
-     *
-     * Requirements:
-     *
-     * - Subtraction cannot overflow.
-     */
     function sub(uint256 a, uint256 b) internal pure returns (uint256) {
         return a - b;
     }
 
-    /**
-     * @dev Returns the multiplication of two unsigned integers, reverting on
-     * overflow.
-     *
-     * Counterpart to Solidity's `*` operator.
-     *
-     * Requirements:
-     *
-     * - Multiplication cannot overflow.
-     */
+ 
     function mul(uint256 a, uint256 b) internal pure returns (uint256) {
         return a * b;
     }
 
-    /**
-     * @dev Returns the integer division of two unsigned integers, reverting on
-     * division by zero. The result is rounded towards zero.
-     *
-     * Counterpart to Solidity's `/` operator.
-     *
-     * Requirements:
-     *
-     * - The divisor cannot be zero.
-     */
+
     function div(uint256 a, uint256 b) internal pure returns (uint256) {
         return a / b;
     }
 
-    /**
-     * @dev Returns the remainder of dividing two unsigned integers. (unsigned integer modulo),
-     * reverting when dividing by zero.
-     *
-     * Counterpart to Solidity's `%` operator. This function uses a `revert`
-     * opcode (which leaves remaining gas untouched) while Solidity uses an
-     * invalid opcode to revert (consuming all remaining gas).
-     *
-     * Requirements:
-     *
-     * - The divisor cannot be zero.
-     */
+    
     function mod(uint256 a, uint256 b) internal pure returns (uint256) {
         return a % b;
     }
 
-    /**
-     * @dev Returns the subtraction of two unsigned integers, reverting with custom message on
-     * overflow (when the result is negative).
-     *
-     * CAUTION: This function is deprecated because it requires allocating memory for the error
-     * message unnecessarily. For custom revert reasons use {trySub}.
-     *
-     * Counterpart to Solidity's `-` operator.
-     *
-     * Requirements:
-     *
-     * - Subtraction cannot overflow.
-     */
+
     function sub(
         uint256 a,
         uint256 b,
@@ -176,18 +90,7 @@ library SafeMath {
         }
     }
 
-    /**
-     * @dev Returns the integer division of two unsigned integers, reverting with custom message on
-     * division by zero. The result is rounded towards zero.
-     *
-     * Counterpart to Solidity's `/` operator. Note: this function uses a
-     * `revert` opcode (which leaves remaining gas untouched) while Solidity
-     * uses an invalid opcode to revert (consuming all remaining gas).
-     *
-     * Requirements:
-     *
-     * - The divisor cannot be zero.
-     */
+    
     function div(
         uint256 a,
         uint256 b,
@@ -199,21 +102,7 @@ library SafeMath {
         }
     }
 
-    /**
-     * @dev Returns the remainder of dividing two unsigned integers. (unsigned integer modulo),
-     * reverting with custom message when dividing by zero.
-     *
-     * CAUTION: This function is deprecated because it requires allocating memory for the error
-     * message unnecessarily. For custom revert reasons use {tryMod}.
-     *
-     * Counterpart to Solidity's `%` operator. This function uses a `revert`
-     * opcode (which leaves remaining gas untouched) while Solidity uses an
-     * invalid opcode to revert (consuming all remaining gas).
-     *
-     * Requirements:
-     *
-     * - The divisor cannot be zero.
-     */
+    
     function mod(
         uint256 a,
         uint256 b,
@@ -228,10 +117,13 @@ library SafeMath {
 
 
 contract VanityNameRegistry {
+    // using openzeppelin safemath to prevent overflow and underflow of integers math operation
     using SafeMath for uint256;
     using SafeMath for uint;
     uint public timeLockPeriod;
-    address owner;
+    uint lockValue = 3 ether;
+    uint nameCount;
+    address public owner;
     bool locked;
     address [] public nameToOwner;
     constructor(uint32 _timeLockPeriod){
@@ -262,31 +154,34 @@ contract VanityNameRegistry {
     event NameRemoval(address indexed caller, bytes indexed name);
     event Operational(bool operationalStatus);
 
-    function setLockedValue(string memory _myString) pure private returns (uint) {
+    function setregistrationFee(string memory _myString) pure private returns (uint) {
         bytes memory sizeOfString = bytes(_myString);
         uint valueForLock = uint(sizeOfString.length) * 10**18;
         return valueForLock;
     }
 
     function registerName(string memory _name) public payable {
-        uint valueForLock = setLockedValue(_name);
+        uint registrationFee = setregistrationFee(_name);
+        uint valueForLock = lockValue.add(registrationFee);
         require(msg.value >= valueForLock, "Not enough value to register name");
         require(!locked, "Account is locked");
         bytes memory nameFromString = bytes(_name);
         uint256 timeLock =  timeLockPeriod.add(block.timestamp);
-        nameBook[msg.sender] = NameBook({name: nameFromString, value: msg.value, time: timeLock, isLocked: true});
+        nameBook[msg.sender] = NameBook({name: nameFromString, value: lockValue, time: timeLock, isLocked: true});
         nameToOwner.push(msg.sender);
         ownerByname[_name] = msg.sender;
-        emit NameRegistered(msg.sender, nameFromString, msg.value);     
+        nameCount++;
+        emit NameRegistered(msg.sender, nameFromString, lockValue);     
     }
 
     function checkExpiry()external onlyOwner{
         for(uint i=0; i < nameToOwner.length; i++ ){
-            if (nameBook[nameToOwner[i]].time > block.timestamp){
+            if (nameBook[nameToOwner[i]].time < block.timestamp){
                 nameBook[nameToOwner[i]].name = " ";
                 nameBook[nameToOwner[i]].time = 0;
                 nameBook[nameToOwner[i]].isLocked = false;
                 delete nameToOwner[i];
+                nameCount--;
             }
         }
     }
@@ -313,13 +208,15 @@ contract VanityNameRegistry {
         nameBook[_removableNameAddress].name = " ";
         nameBook[_removableNameAddress].time = 0;
         nameBook[msg.sender].isLocked = false;
+        nameCount--;
         emit NameRemoval(msg.sender, nameBook[_removableNameAddress].name);
     }
 
-    function withDrawLockValue () external {
+    function withDrawLockValue () external payable {
         require(!locked, "Account is locked");
         require(block.timestamp > nameBook[msg.sender].time, "Too early");
         require(!nameBook[msg.sender].isLocked, "Name service in action, wait till expire");
+        require(msg.value <= nameBook[msg.sender].value, "locked value exceeds");
         uint withdrawableBalance = nameBook[msg.sender].value;
         nameBook[msg.sender].value = 0;
         payable(msg.sender).transfer(withdrawableBalance);
@@ -330,17 +227,12 @@ contract VanityNameRegistry {
         return ownerByname[_name];
     }
 
-    function getBytesSize(string memory _myString) pure public returns(uint){
-        bytes memory sizeOfString = bytes(_myString);
-        return sizeOfString.length;
-    }
-
     function getContractBalance() public view returns (uint) {
         return address(this).balance;
     }
 
-    function getNameRegistryUserLength() public view returns (uint) {
-        return nameToOwner.length;
+    function getTotalRegisteredName() public view returns (uint) {
+        return nameCount;
     }
 
     function getOperationalStatus() public view returns(bool){
