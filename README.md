@@ -21,8 +21,8 @@
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
-[![None][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][https://www.linkedin.com/in/hrafiul/]
+[![MIT License][license-shield]][license-url]
+[![https://www.linkedin.com/in/hrafiul/]][linkedin-url]
 
 
 
