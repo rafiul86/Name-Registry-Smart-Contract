@@ -1,5 +1,5 @@
-const VanityName = artifacts.require("VanityName");
+const GenuinoNameRegistry = artifacts.require("GenuinoNameRegistry");
 
 module.exports = async function (deployer) {
-  await deployer.deploy(VanityName, 300);
+  await deployer.deploy(GenuinoNameRegistry, 300);
 };

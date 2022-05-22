@@ -116,14 +116,14 @@ library SafeMath {
 }
 
 
-contract VanityNameRegistry {
+contract GenuinoNameRegistry {
     // using openzeppelin safemath to prevent overflow and underflow of integers math operation
     using SafeMath for uint256;
     using SafeMath for uint;
     uint public timeLockPeriod = 604800; // 7 days
     uint64 constant minimumDelayPeriod = 60;
     uint64 constant maximumDelayPeriod = 24*60*60;
-    uint lockValue = 3 ether;
+    uint public lockValue = 3 ether;
     uint nameCount;
     address public owner;
     bool locked;
