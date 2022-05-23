@@ -18,7 +18,7 @@ module.exports = {
     hardhat: {
     },
     rinkeby: {
-      url: "",
+      url: "https://eth-rinkeby.alchemyapi.io/v2/tRCAGwsakPlF7qNXjTrdQ2BfG3GsO6",
       accounts: [""]
     }
   },

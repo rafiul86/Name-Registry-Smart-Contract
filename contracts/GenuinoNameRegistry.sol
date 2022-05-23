@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: NONE
 pragma solidity ^0.8.0;
-import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
+
 // OpenZeppelin Contracts (last updated v4.6.0) (utils/math/SafeMath.sol)
 
 // CAUTION
@@ -116,7 +116,8 @@ library SafeMath {
 }
 
 
-contract GenuinoNameRegistry is Initializable {
+contract GenuinoNameRegistry {
+
     // using openzeppelin safemath to prevent overflow and underflow of integers math operation
     using SafeMath for uint256;
     using SafeMath for uint;
@@ -124,12 +125,11 @@ contract GenuinoNameRegistry is Initializable {
     uint64 constant minimumDelayPeriod = 60;
     uint64 constant maximumDelayPeriod = 24*60*60;
     uint public lockValue = 3 ether;
-    uint nameCount;
     address public owner;
     bool locked;
     bytes32 [] public nameToOwner;
 
-    function initialize(uint32 _timeLockPeriod) public initializer {
+    constructor(uint32 _timeLockPeriod)  {
         timeLockPeriod = _timeLockPeriod;
         owner = msg.sender;
     }
@@ -194,7 +194,6 @@ contract GenuinoNameRegistry is Initializable {
         uint256 timeLock =  timeLockPeriod.add(block.timestamp);
         nameRecord[nameForRgistration] = NameRecord({ownerOfName: msg.sender, name: nameForRgistration, value: lockValue, endPeriod: timeLock, isLocked: true});
         nameToOwner.push(nameForRgistration);
-        nameCount++;
         emit NameRegistered(msg.sender, nameForRgistration, lockValue);  
         if (msg.value > valueForLock) {
             // extra amount paid by the user should be refunded
@@ -210,7 +209,6 @@ contract GenuinoNameRegistry is Initializable {
                 nameRecord[nameToOwner[i]].endPeriod = 0;
                 nameRecord[nameToOwner[i]].isLocked = false;
                 delete nameToOwner[i];
-                nameCount--;
             }
         }
     }
@@ -247,7 +245,6 @@ contract GenuinoNameRegistry is Initializable {
         nameRecord[nameForRemoval].endPeriod = 0;
         nameRecord[nameForRemoval].ownerOfName = address(0);
         nameRecord[nameForRemoval].isLocked = false;
-        nameCount--;
         emit NameRemoval(msg.sender, nameRecord[nameForRemoval].name);
     }
 
@@ -267,10 +264,6 @@ contract GenuinoNameRegistry is Initializable {
 
     function getContractBalance() public view returns (uint) {
         return address(this).balance;
-    }
-
-    function getTotalRegisteredName() public view returns (uint) {
-        return nameCount;
     }
 
     function getOperationalStatus() public view returns(bool){

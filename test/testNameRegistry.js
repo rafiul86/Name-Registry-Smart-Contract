@@ -1,10 +1,12 @@
 // This script is designed to test the solidity smart contract - GenuinoNameRegistry.sol -- and the various functions within
 // variable and assign the compiled smart contract artifact
 const GenuinoNameRegistry = artifacts.require('GenuinoNameRegistry.sol');
+const GNSV2 = artifacts.require('GNSV2.sol');
 const BigNumber = require('bignumber.js');
 const crypto = require("crypto");
 const web3 = require('web3');
-const time = require('./helper.js')
+const time = require('./helper.js');
+const { deployProxy, upgradeProxy } = require('@openzeppelin/truffle-upgrades');
 
 contract('GenuinoNameRegistry', async function(accounts) {
 
@@ -16,25 +18,32 @@ contract('GenuinoNameRegistry', async function(accounts) {
     it('deposit 3 ether to register name', async () => {
     
         genuinoNameRegistry = await GenuinoNameRegistry.deployed()
-        // deposit 3 ether to register name
-        let lockedValue = "3000000000000000000"
-       
-        let result = await genuinoNameRegistry.lockValue();
-        
-        // assert to check required amount deposited prior to registration
-        assert.equal(result, lockedValue, "lockedvalue 3 ether");
-    
+      //   // deposit 3 ether to register name
+      it('works before and after upgrading', async function () {
+        const instance = await upgrades.deployProxy(GenuinoNameRegistry, [42]);
+        assert.strictEqual(await instance.retrieve(), 42);
+      
+        await upgrades.upgradeProxy(instance.address, GNSV2);
+        assert.strictEqual(await instance.retrieve(), 42);
       });
-
-      it("Should register the desired name", async function () {
-        const secretBytes = crypto.randomBytes(16);
-        genuinoNameRegistry = await GenuinoNameRegistry.deployed()
-        const secretHash = await genuinoNameRegistry.generateCondition("genuino", secretBytes);
-            
-        await genuinoNameRegistry.condition(secretHash);
-        await time.increase(time.duration.seconds(100));
-        let result = await genuinoNameRegistry.registerName("genuino", secretHash);
+      //   let lockedValue = "3000000000000000000"
+       
+      //   let result = await genuinoNameRegistry.lockValue();
         
-        assert.equal(result, true);
+      //   // assert to check required amount deposited prior to registration
+      //   assert.equal(result, lockedValue, "lockedvalue 3 ether");
+    
+      // });
+
+      // it("Should register the desired name", async function () {
+      //   const secretBytes = crypto.randomBytes(16);
+      //   genuinoNameRegistry = await GenuinoNameRegistry.deployed()
+      //   const secretHash = await genuinoNameRegistry.generateCondition("genuino", secretBytes);
+            
+      //   await genuinoNameRegistry.condition(secretHash);
+      //   await time.increase(time.duration.seconds(100));
+      //   let result = await genuinoNameRegistry.registerName("genuino", secretHash);
+        
+      //   assert.equal(result, true);
         });
     });
