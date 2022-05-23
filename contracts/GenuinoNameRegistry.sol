@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: NONE
 pragma solidity ^0.8.0;
-
+import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 // OpenZeppelin Contracts (last updated v4.6.0) (utils/math/SafeMath.sol)
 
 // CAUTION
@@ -116,7 +116,7 @@ library SafeMath {
 }
 
 
-contract GenuinoNameRegistry {
+contract GenuinoNameRegistry is Initializable {
     // using openzeppelin safemath to prevent overflow and underflow of integers math operation
     using SafeMath for uint256;
     using SafeMath for uint;
@@ -128,10 +128,10 @@ contract GenuinoNameRegistry {
     address public owner;
     bool locked;
     bytes32 [] public nameToOwner;
-    constructor(uint32 _timeLockPeriod){
+
+    function initialize(uint32 _timeLockPeriod) public initializer {
         timeLockPeriod = _timeLockPeriod;
         owner = msg.sender;
-        locked = false;
     }
     struct NameRecord {
         address ownerOfName;
