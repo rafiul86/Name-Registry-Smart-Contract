@@ -50,6 +50,12 @@ describe("Vanity Name Registration Service", function () {
     ).to.be.reverted;
   });
 
+  it("only owner of contract can set operational ststus", async function () {
+    await expect(
+      GNS.connect(user3).setOpeartionalStatus(true)
+    ).to.be.revertedWith("Caller is not owner of registry service");
+  });
+
   it("Should be able to withdraw funds if name is expired", async function () {
     const secretPass = crypto.randomBytes(32);
     const condition = await GNS.connect(user2).generateCondition("genuino", secretPass);
@@ -97,4 +103,60 @@ describe("Vanity Name Registration Service", function () {
     )))
     .to.be.revertedWith("you are not owner of this name")
   });
+
+  it("vm revert if name is not available", async function () {
+    const secretAlpha = crypto.randomBytes(32);
+    const condition = await GNS.connect(user2).generateCondition("genuino", secretAlpha);
+
+    await GNS.connect(user2).condition(condition);
+
+    await timeTravel(100, true);
+
+    await GNS.connect(user2).registerName("genuino", secretAlpha, { value: ethers.utils.parseEther("5") });
+
+    const secretBeta = crypto.randomBytes(32);
+    const condition2 = await GNS.connect(user2).generateCondition("genuino", secretBeta);
+
+    await GNS.connect(user3).condition(condition2);
+
+    await timeTravel(100, true);
+    await expect(
+      GNS.connect(user3).registerName("genuino", secretBeta, { value: ethers.utils.parseEther("5") })
+    ).to.be.revertedWith("name is not available, try with another name");
+  });
+
+  it("only owner of contract can remove name from registry", async function () {
+    await expect(
+      GNS.connect(user3).removeName(true)
+    ).to.be.revertedWith("Caller is not owner of registry service");
+  });
+
+  it("only owner of contract can withdraw contract balance collect as registration fee from user", async function () {
+    const secretPass = crypto.randomBytes(32);
+    const condition = await GNS.connect(user2).generateCondition("genuino", secretPass);
+
+    await GNS.connect(user2).condition(condition);
+
+    await timeTravel(100, true);
+    await GNS.connect(user2).registerName("genuino", secretPass, { value: ethers.utils.parseEther("5") });
+
+    await expect(
+      GNS.connect(user1).withdrawAccountBalance()
+    ).to.emit(GNS, "BalanceWithdwalFromAccount");
+  });
+
+  it("can't withdraw balance by other than owner", async function () {
+    const secretPass = crypto.randomBytes(32);
+    const condition = await GNS.connect(user2).generateCondition("genuino", secretPass);
+
+    await GNS.connect(user2).condition(condition);
+
+    await timeTravel(100, true);
+    await GNS.connect(user2).registerName("genuino", secretPass, { value: ethers.utils.parseEther("5") });
+
+    await expect(
+      GNS.connect(user2).withdrawAccountBalance()
+    ).to.be.revertedWith("Caller is not owner of registry service");
+  });
+
 });

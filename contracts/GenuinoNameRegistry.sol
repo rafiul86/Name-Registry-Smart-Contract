@@ -184,7 +184,7 @@ contract GenuinoNameRegistry {
 
     function registerName(string calldata _name, bytes32 _secretKey) public payable {
         bytes32 nameForRgistration = keccak256(bytes(_name));
-        require(isNameAvailable(nameForRgistration) == address(0), "name is not available for registration");
+        require(isNameAvailable(nameForRgistration) == address(0), "name is not available, try with another name");
         bytes32 conditionToPreventFrontRun = generateCondition(_name, _secretKey);
         checkFrontRunConditions(conditionToPreventFrontRun);
         uint registrationFee = calculateregistrationFee(_name);
