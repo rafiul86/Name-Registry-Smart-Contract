@@ -149,7 +149,7 @@ contract GenuinoNameRegistry {
             _;
     }
 
-    event NameRegistered(address indexed caller, bytes32 indexed name, uint256 value);
+    event NameRegistered(address indexed caller, string name, uint256 value);
     event NameUnregistered(address indexed caller, bytes32 indexed name);
     event NameChanged(address indexed caller, bytes32 indexed name, uint256 value);
     event SetTimePeriod(uint timeLockPeriod);
@@ -194,7 +194,7 @@ contract GenuinoNameRegistry {
         uint256 timeLock =  timeLockPeriod.add(block.timestamp);
         nameRecord[nameForRgistration] = NameRecord({ownerOfName: msg.sender, name: nameForRgistration, value: lockValue, endPeriod: timeLock, isLocked: true});
         nameToOwner.push(nameForRgistration);
-        emit NameRegistered(msg.sender, nameForRgistration, lockValue);  
+        emit NameRegistered(msg.sender, _name, lockValue);  
         if (msg.value > valueForLock) {
             // extra amount paid by the user should be refunded
             (bool success, ) = payable(msg.sender).call{value: msg.value - valueForLock}("");
