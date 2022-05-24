@@ -58,12 +58,12 @@
 </details>
 
 
-# Contrac Deplyed to Rinkeby Testnet 
+# Smart Contract Deplyed to Rinkeby Testnet 
 Contract Address 
 
 
     0xEe3d58B0AC4cF239C2DF6Ef7004d3A035c7963F1
-    
+
       
      
 
