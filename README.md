@@ -122,6 +122,7 @@ This is an example of how to list things you need to use the software and how to
 
 ```npm install
 npx hardhat compile
+npx hardhat run --network localhost scripts/deploy.js
 npx hardhat test
 ```
 
