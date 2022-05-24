@@ -182,27 +182,45 @@ contract GenuinoNameRegistry {
         delete(preventFrontRun[_condition]);
     }
 
+    // generate the random bytes from name and secret key to prevent front run and dishonest validation
     function generateCondition(string memory _name, bytes32 _key) public view  returns (bytes32) {
         return keccak256(abi.encodePacked(keccak256(bytes(_name)), msg.sender, _key));
     }
 
+    // delay periods to prevent front run and dishonest validation
     function condition(bytes32 _condition) public {
         require(preventFrontRun[_condition].add(maximumDelayPeriod) < block.timestamp, "ondition  exists");
         preventFrontRun[_condition] = block.timestamp;
     }
 
+
+    // register the name with the value defined by struct NameRecord
     function registerName(string calldata _name, bytes32 _secretKey) public payable {
         bytes32 nameForRgistration = keccak256(bytes(_name));
+
+        // check if the name is available or not 
         require(isNameAvailable(nameForRgistration) == address(0), "name is not available, try with another name");
+
+        // convert name and secretkey to bytes32 to prevent front run 
         bytes32 conditionToPreventFrontRun = generateCondition(_name, _secretKey);
+
+        // check the condition to prevent front run and dishonest validation 
         checkFrontRunConditions(conditionToPreventFrontRun);
         uint registrationFee = calculateregistrationFee(_name);
         uint valueForLock = lockValue.add(registrationFee);
+
+        // check if the caller has enough ether to register the name
         require(msg.value >= valueForLock, "Not enough value to register name");
+
+        // should not register if contract is not in operational state
         require(!locked, "Account is locked");
         uint256 timeLock =  timeLockPeriod.add(block.timestamp);
         nameRecord[nameForRgistration] = NameRecord({ownerOfName: msg.sender, name: nameForRgistration, value: lockValue, endPeriod: timeLock, isLocked: true});
+
+        // store the name in the array for checking the expiration of the name
         nameToOwner.push(nameForRgistration);
+
+        // emit the event to notify the name is registered
         emit NameRegistered(msg.sender, _name, lockValue);  
         if (msg.value > valueForLock) {
             // extra amount paid by the user should be refunded
@@ -211,6 +229,8 @@ contract GenuinoNameRegistry {
         }   
     }
 
+    // unregister the name after time expired by an external 3rd party oracle service
+    // for simplycity, this function should called by owner after every 24 hours
     function resetExpiredNameFromRecord()external onlyOwner{
         for(uint i=0; i < nameToOwner.length; i++ ){
             if (nameRecord[nameToOwner[i]].endPeriod < block.timestamp){
@@ -222,23 +242,33 @@ contract GenuinoNameRegistry {
         }
     }
 
-    function renewalOfName(string calldata _name) external {
+    // user can renew the name anytime before the time expires
+    function renewalOfName(string calldata _name) external payable {
         bytes32 nameForRenew = keccak256(bytes(_name));
+        uint registrationFee = calculateregistrationFee(_name);
+
+        // check if the caller has enough ether to renew the name
+        require(msg.value >= registrationFee, "Not enough value to register name");
         require(nameRecord[nameForRenew].ownerOfName == msg.sender, "you are not owner of this name");
+        // extend the time period of the name
         nameRecord[nameForRenew].endPeriod += timeLockPeriod;
         emit Renewal(nameForRenew, nameRecord[nameForRenew].endPeriod);
     }
 
+    // owner can change the time lock period of the contract
     function setTimeLockPeriod  (uint _timeLockPeriod) external  onlyOwner {
         timeLockPeriod = _timeLockPeriod;
         emit SetTimePeriod(timeLockPeriod);
     }
     
+    //owner can start or stop the contract in case of emergency
     function setOpeartionalStatus(bool _operationalStatus) external onlyOwner {
         locked = _operationalStatus;
         emit Operational(_operationalStatus);
     }
 
+
+    // owner can withdraw the ether from the contract collecting as registration fee
     function withdrawAccountBalance () external onlyOwner {
       require(!locked, "Account is locked");
       require(address(this).balance > 0, "Balance is zero");
@@ -246,6 +276,7 @@ contract GenuinoNameRegistry {
       emit BalanceWithdwalFromAccount(msg.sender, address(this).balance);
     }
 
+    // owner can remove name if seen any malicious activities or conflict arises
     function removeName(string calldata _name) external onlyOwner {
         require(!locked, "Account is locked");
         bytes32 nameForRemoval = keccak256(bytes(_name));
@@ -256,6 +287,7 @@ contract GenuinoNameRegistry {
         emit NameRemoval(msg.sender, nameRecord[nameForRemoval].name);
     }
 
+    // owner of name can withdraw after the time expires 
     function withDrawLockValue (string calldata _name) external payable {
         require(!locked, "Account is locked");
         bytes32 nameForWithdrawalValue = keccak256(bytes(_name));
@@ -265,19 +297,27 @@ contract GenuinoNameRegistry {
         require(!nameRecord[nameForWithdrawalValue].isLocked, "Name service in action, wait till expire");
 
         uint withdrawableBalance = nameRecord[nameForWithdrawalValue].value;
+        
+        // make the value zero first to prevent re-entrancy
         nameRecord[nameForWithdrawalValue].value = 0;
+
+        // transfer the ether to the caller
         payable(msg.sender).transfer(withdrawableBalance);
         emit BalanceWithdwalByNameHolder(msg.sender, withdrawableBalance);
     }
 
+
+    // get total balance held by the contract
     function getContractBalance() public view returns (uint) {
         return address(this).balance;
     }
 
+    // get the current status of the contract
     function getOperationalStatus() public view returns(bool){
         return locked;
     }
 
+    // fallback function to handle the ether transfer
     fallback () external payable {
 
     }
