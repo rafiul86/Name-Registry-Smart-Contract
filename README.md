@@ -60,11 +60,13 @@
 
 # Contrac Deplyed to Rinkeby Testnet 
 Contract Address   
-<div class="highlight">
+
+    ```<div class="highlight">
   <code> 0xEe3d58B0AC4cF239C2DF6Ef7004d3A035c7963F1  </code>
   <button>Copy</button>
 </div> 
-    0xEe3d58B0AC4cF239C2DF6Ef7004d3A035c7963F1 
+```
+     
 
 ![Contract creation](https://user-images.githubusercontent.com/68476971/169951933-4d736eb3-8792-4a47-b9bf-2a6aef010943.png)
 
