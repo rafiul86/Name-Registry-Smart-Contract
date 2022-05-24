@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "C:\\projects\\vanity-name-registration\\contracts\\GenuinoNameRegistry.sol": {
-      "lastModificationDate": 1653372018758,
-      "contentHash": "57679dd9b3e8d130ed1bfde24948e942",
+      "lastModificationDate": 1653378974157,
+      "contentHash": "43377a61b3df3d2891d26734665137ef",
       "sourceName": "contracts/GenuinoNameRegistry.sol",
       "solcConfig": {
         "version": "0.8.14",
@@ -28,12 +28,16 @@
           }
         }
       },
-      "imports": [],
+      "imports": [
+        "./KeeperBase.sol",
+        "./KeeperCompatibleInterface.sol"
+      ],
       "versionPragmas": [
         "0.8.14"
       ],
       "artifacts": [
         "GenuinoNameRegistry",
+        "KeeperCompatible",
         "SafeMath"
       ]
     },
@@ -70,6 +74,76 @@
       ],
       "artifacts": [
         "Migrations"
+      ]
+    },
+    "C:\\projects\\vanity-name-registration\\contracts\\KeeperBase.sol": {
+      "lastModificationDate": 1653374946854,
+      "contentHash": "edd46a936f20ac25808b9db44ffaa312",
+      "sourceName": "contracts/KeeperBase.sol",
+      "solcConfig": {
+        "version": "0.8.14",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.14"
+      ],
+      "artifacts": [
+        "KeeperBase"
+      ]
+    },
+    "C:\\projects\\vanity-name-registration\\contracts\\KeeperCompatibleInterface.sol": {
+      "lastModificationDate": 1653375116860,
+      "contentHash": "c2baa3d51b66207a2f9b928bd7c9ec6e",
+      "sourceName": "contracts/KeeperCompatibleInterface.sol",
+      "solcConfig": {
+        "version": "0.8.14",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.14"
+      ],
+      "artifacts": [
+        "KeeperCompatibleInterface"
       ]
     }
   }

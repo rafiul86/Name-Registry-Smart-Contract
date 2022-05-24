@@ -5,7 +5,7 @@ async function main() {
  
   // We get the contract to deploy
   const GenuinoNameRegistry = await hre.ethers.getContractFactory("GenuinoNameRegistry");
-  const GNS = await GenuinoNameRegistry.deploy(300);
+  const GNS = await GenuinoNameRegistry.deploy(604800, 86400);
 
   await GNS.deployed();
 
