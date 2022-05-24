@@ -62,6 +62,9 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
+# Contrac Deplyed to Rinkeby Testnet 
+Contract Address    0xEe3d58B0AC4cF239C2DF6Ef7004d3A035c7963F1 
+
 Front-running and malicious node/validator resistant smart contract, written in Solidity to register vanity names/domains on EVM Blockchains.
 An unregistered name can be registered for a certain amount of time by locking a certain balance of an account. After the registration expires,
  the account loses ownership of the name and his balance is unlocked. The registration can be renewed by making an on-chain call to keep the 

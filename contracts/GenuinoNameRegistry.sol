@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: NONE
-pragma solidity ^0.8.0;
+pragma solidity 0.8.14;
 
 // OpenZeppelin Contracts (last updated v4.6.0) (utils/math/SafeMath.sol)
 
