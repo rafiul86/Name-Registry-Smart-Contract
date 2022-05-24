@@ -158,8 +158,8 @@ None
 <!-- CONTACT -->
 ## Contact
 
-Rafiul Hasan -[Linkedin](https://www.linkedin.com/in/hrafiul/)
-              [@r_hasan_c](https://twitter.com/r_hasan_c) - rafiulhasan86@gmail.com
+Rafiul Hasan -[!Linkedin](https://www.linkedin.com/in/hrafiul/)
+              [!@r_hasan_c](https://twitter.com/r_hasan_c) - rafiulhasan86@gmail.com
 
 Project Link: [https://github.com/rafiul86/Name-Registry-Smart-Contract](https://github.com/rafiul86/Name-Registry-Smart-Contract)
 
