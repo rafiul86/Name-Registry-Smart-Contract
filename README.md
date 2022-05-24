@@ -37,6 +37,7 @@
 <details>
   <summary>Table of Contents</summary>
   <ol>
+    <li><a href="#inspiration">Inspiration</a></li>
     <li>
       <a href="#about-the-project">About The Project</a>
       <ul>
@@ -50,6 +51,7 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
+    <li><a href="#testing">Testinf</a></li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
@@ -58,7 +60,7 @@
 </details>
 
 
-# Smart Contract Deplyed to Rinkeby Testnet 
+### Smart Contract Deplyed to Rinkeby Testnet 
 Contract Address 
 
 
