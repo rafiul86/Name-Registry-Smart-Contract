@@ -61,10 +61,7 @@
 # Contrac Deplyed to Rinkeby Testnet 
 Contract Address   
 
-    ```<div class="highlight">
-  <code> 0xEe3d58B0AC4cF239C2DF6Ef7004d3A035c7963F1  </code>
-  <button>Copy</button>
-</div> 
+    ```0xEe3d58B0AC4cF239C2DF6Ef7004d3A035c7963F1
 ```
      
 
