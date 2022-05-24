@@ -156,6 +156,16 @@ This is an example of how to list things you need to use the software and how to
    ```
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+Change the secret variables as process.env.SECRET_KEY and process.env.ALCHEMY provided by API provider if deploy to remote testnet
+
+```npm install
+  npx hardhat compile
+  npx hardhat run --network localhost scripts/deploy.js
+  ```
+
+![Secret Variables](https://user-images.githubusercontent.com/68476971/169951589-da24b489-0cb6-44f8-a1fb-f9f02afca154.png)
+
+
 <!--Testing-->
 ## Testing 
 
@@ -164,10 +174,6 @@ This is an example of how to list things you need to use the software and how to
   npx hardhat run --network localhost scripts/deploy.js
   npx hardhat test
   ```
-Change the secret variables as process.env.SECRET_KEY and process.env.ALCHEMY provided by API provider if deploy to remote testnet
-
-![Secret Variables](https://user-images.githubusercontent.com/68476971/169951589-da24b489-0cb6-44f8-a1fb-f9f02afca154.png)
-
 
 
 After run the commands terminal should show the tests results....
