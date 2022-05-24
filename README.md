@@ -115,16 +115,14 @@ This is an example of how to list things you need to use the software and how to
    ```sh
    npm install
    ```
-
-   ```
-
-
-
-
-
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+<!--Testing-->
+## Testing 
 
+```npm install
+npx hardhat compile
+npx hardhat test```
 
 <!-- CONTRIBUTING -->
 ## Contributing
