@@ -120,7 +120,7 @@ An unregistered name can be registered for a certain amount of time by locking a
 * [Truffle Suite](https://trufflesuite.com/)
 * [Hardhat](https://hardhat.org/)
 * [Ehers.js](https://docs.ethers.io/v5/)
-* [Chai](https://www.npmjs.com/package/chai)
+* [Chai](https://www.npmjs.com/package/chai) - as testing library.
 
 
 
