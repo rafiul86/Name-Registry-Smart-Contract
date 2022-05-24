@@ -121,18 +121,21 @@ contract GenuinoNameRegistry {
     // using openzeppelin safemath to prevent overflow and underflow of integers math operation
     using SafeMath for uint256;
     using SafeMath for uint;
+
+    // state variables
     uint public timeLockPeriod; // in seconds
-    uint64 constant minimumDelayPeriod = 60;
-    uint64 constant maximumDelayPeriod = 24*60*60;
-    uint public lockValue = 3 ether;
-    address public owner;
-    bool locked;
-    bytes32 [] public nameToOwner;
+    uint64 constant minimumDelayPeriod = 60; // minimum delay period to prevent frontrun and dishonest validation
+    uint64 constant maximumDelayPeriod = 24*60*60;  // maximum delay period to prevent frontrun and dishonest validation
+    uint public lockValue = 3 ether; // amount of ether to lock as a deposit
+    address public owner;  // owner of the smart contract
+    bool locked;  // indicates if the contract locked is fales means operational state 
+    bytes32 [] public nameToOwner; // registered name stored in the array
 
     constructor(uint32 _timeLockPeriod)  {
         timeLockPeriod = _timeLockPeriod;
         owner = msg.sender;
     }
+    // struct to store the name variables
     struct NameRecord {
         address ownerOfName;
         bytes32 name;
@@ -140,15 +143,19 @@ contract GenuinoNameRegistry {
         uint256 endPeriod;
         bool isLocked;
     }
-    
+    // mapping of name to name record
     mapping(bytes32 => NameRecord) public nameRecord;
+
+    // mapping to store bytes to prevent frontrun and dishonest validation
     mapping (bytes32 => uint) preventFrontRun;
 
+    // modifier indicates the contract owner only can call this function
     modifier onlyOwner {
         require(msg.sender == owner, "Caller is not owner of registry service");
             _;
     }
 
+    // events for the smart contract after performing the functions
     event NameRegistered(address indexed caller, string name, uint256 value);
     event NameUnregistered(address indexed caller, bytes32 indexed name);
     event NameChanged(address indexed caller, bytes32 indexed name, uint256 value);
@@ -159,14 +166,16 @@ contract GenuinoNameRegistry {
     event Renewal(bytes32 indexed name, uint256 value);
     event Operational(bool operationalStatus);
 
+    // helper function to calculate registration fee varies on the size of the name
     function calculateregistrationFee(string calldata name) public pure returns (uint64) {
         return uint64(bytes(name).length) * 10**16;
     }
-
+    // check if the name is available or not
      function isNameAvailable(bytes32  _name) public view returns (address) {
         return nameRecord[_name].ownerOfName;
     }
 
+    // check the condition to prevent front run and dishonest validation prior to registration
      function checkFrontRunConditions(bytes32 _condition) public {
         require(preventFrontRun[_condition].add(minimumDelayPeriod) <= block.timestamp);
         require(preventFrontRun[_condition].add(maximumDelayPeriod) > block.timestamp);
