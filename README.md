@@ -127,7 +127,7 @@ This is an example of how to list things you need to use the software and how to
   ```
 After run the commands terminal should show the tests results....
 
-![name registry](https://user-images.githubusercontent.com/68476971/169948793-4a4cf14b-9346-4a42-a083-563eacbfaaab.png)
+![Test Result](https://user-images.githubusercontent.com/68476971/169948793-4a4cf14b-9346-4a42-a083-563eacbfaaab.png)
 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
