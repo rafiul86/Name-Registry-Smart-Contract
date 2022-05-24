@@ -253,6 +253,11 @@ contract GenuinoNameRegistry {
         // extend the time period of the name
         nameRecord[nameForRenew].endPeriod += timeLockPeriod;
         emit Renewal(nameForRenew, nameRecord[nameForRenew].endPeriod);
+        if (msg.value > registrationFee) {
+            // extra amount paid by the user should be refunded
+            (bool success, ) = payable(msg.sender).call{value: msg.value - registrationFee}("");
+            require(success, "refund not succcessful");
+        } 
     }
 
     // owner can change the time lock period of the contract

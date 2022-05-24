@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "C:\\projects\\vanity-name-registration\\contracts\\GenuinoNameRegistry.sol": {
-      "lastModificationDate": 1653367302828,
-      "contentHash": "89cf425bb5d99b81658330a5d36d1142",
+      "lastModificationDate": 1653372018758,
+      "contentHash": "57679dd9b3e8d130ed1bfde24948e942",
       "sourceName": "contracts/GenuinoNameRegistry.sol",
       "solcConfig": {
         "version": "0.8.14",
