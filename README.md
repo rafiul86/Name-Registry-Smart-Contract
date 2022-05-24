@@ -73,12 +73,15 @@ Contract Address
 
 
 <!-- ABOUT THE PROJECT -->
-## About The Project
+## Inspiration
 
 Blockchain technology enables decentralized applications (DApps) or smart contracts. Function calls (or transactions) to the DApp are processed by a decentralized network. Transactions are finalized in stages: they (generally) first relay around the network, then are selected by a miner and put into a valid block, and finally, the block is well-enough incorporated in the blockchain that is unlikely to be changed. Front-running is an attack where a malicious node observes a transaction after it is broadcast but before it is finalized, and attempts to have its own transaction confirmed before or instead of the observed transaction.
 
 In this application I followed Consensys provided guideline to prevent frontrun and malicious activities by validator. Suggestion is to store 
 the keccak256 hash of the data in the first transaction, then reveal the data and verify it against the hash in the second transaction. 
+
+
+## About The Project
 
 Front-running and malicious node/validator resistant smart contract, written in Solidity to register vanity names/domains on EVM Blockchains.
 An unregistered name can be registered for a certain amount of time by locking a certain balance of an account. After the registration expires,
