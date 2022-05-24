@@ -117,6 +117,7 @@ An unregistered name can be registered for a certain amount of time by locking a
 * [Solidity](https://docs.soliditylang.org/en/v0.8.14/)
 * [Node.js](https://nodejs.org/en/docs/)
 * [Openzeppelin](https://www.openzeppelin.com/)
+* [Chainlink-Oracle](https://docs.chain.link/docs/chainlink-keepers/register-upkeep/)
 * [Truffle Suite](https://trufflesuite.com/)
 * [Hardhat](https://hardhat.org/)
 * [Ehers.js](https://docs.ethers.io/v5/)
