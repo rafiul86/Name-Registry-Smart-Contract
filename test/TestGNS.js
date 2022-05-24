@@ -17,7 +17,7 @@ describe("Vanity Name Registration Service", function () {
 
   this.beforeEach(async () => {
     const GenuinoNameRegistry = await ethers.getContractFactory("GenuinoNameRegistry");
-    GNS = await GenuinoNameRegistry.deploy(30);
+    GNS = await GenuinoNameRegistry.deploy(30, 100);
     await GNS.deployed();
     // global variables
     [user1, user2, user3, user4, user5] = await ethers.getSigners();
