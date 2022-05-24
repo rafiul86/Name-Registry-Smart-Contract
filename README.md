@@ -120,11 +120,11 @@ This is an example of how to list things you need to use the software and how to
 <!--Testing-->
 ## Testing 
 
-```npm install
-npx hardhat compile
-npx hardhat run --network localhost scripts/deploy.js
-npx hardhat test
-```
+  ```npm install
+  npx hardhat compile
+  npx hardhat run --network localhost scripts/deploy.js
+  npx hardhat test
+  ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -158,8 +158,9 @@ None
 <!-- CONTACT -->
 ## Contact
 
-Rafiul Hasan -[!Linkedin](https://www.linkedin.com/in/hrafiul/)
-              [!@r_hasan_c](https://twitter.com/r_hasan_c) - rafiulhasan86@gmail.com
+Rafiul Hasan -[Solidity](https://docs.soliditylang.org/en/v0.8.14/)
+              [Linkedin](https://www.linkedin.com/in/hrafiul/)
+              [@r_hasan_c](https://twitter.com/r_hasan_c) - rafiulhasan86@gmail.com
 
 Project Link: [https://github.com/rafiul86/Name-Registry-Smart-Contract](https://github.com/rafiul86/Name-Registry-Smart-Contract)
 
