@@ -60,7 +60,7 @@
 </details>
 
 
-### Smart Contract Deplyed to Rinkeby Testnet 
+### Smart Contract Deplyed to Ethereum Rinkeby Testnet 
 Contract Address 
 
 
