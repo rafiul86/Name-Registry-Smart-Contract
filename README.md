@@ -74,7 +74,7 @@ Contract Address
 ![deployed_to_rinkeby_testnet](https://user-images.githubusercontent.com/68476971/169980483-53b8974d-aa37-4c77-bbfb-2ef5708cf5e9.png)
 
 
-### Smart Contract Registered to Oracle testnet for chacking expiration of name registration
+### Smart Contract Registered to Oracle testnet for chacking expiration of name registration after every 24 hours automatically
 
 Step: 1
 
