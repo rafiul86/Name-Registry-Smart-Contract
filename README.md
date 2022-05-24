@@ -128,6 +128,12 @@ This is an example of how to list things you need to use the software and how to
   npx hardhat run --network localhost scripts/deploy.js
   npx hardhat test
   ```
+And Change the secret variables as process.env.SECRET_KEY and process.env.ALCHEMY provided by API provider
+
+![Secret Variables](https://user-images.githubusercontent.com/68476971/169951589-da24b489-0cb6-44f8-a1fb-f9f02afca154.png)
+
+
+
 After run the commands terminal should show the tests results....
 
 ![Test Result](https://user-images.githubusercontent.com/68476971/169948793-4a4cf14b-9346-4a42-a083-563eacbfaaab.png)
