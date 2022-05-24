@@ -122,7 +122,10 @@ This is an example of how to list things you need to use the software and how to
 
 ```npm install
 npx hardhat compile
-npx hardhat test```
+npx hardhat test
+```
+
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- CONTRIBUTING -->
 ## Contributing
