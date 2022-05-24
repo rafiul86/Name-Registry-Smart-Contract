@@ -155,7 +155,7 @@ And Change the secret variables as process.env.SECRET_KEY and process.env.ALCHEM
 After run the commands terminal should show the tests results....
 
 
-![Tests](https://user-images.githubusercontent.com/68476971/169960429-bbee96bd-86f6-4bc6-9dd9-0beef6073d5f.png)
+![Tests](https://user-images.githubusercontent.com/68476971/169960734-8bad34dc-93ca-40b8-843d-e8e48992d94a.png)
 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
