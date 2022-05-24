@@ -160,7 +160,7 @@ Change the secret variables as process.env.SECRET_KEY and process.env.ALCHEMY pr
 
 ```npm install
   npx hardhat compile
-  npx hardhat run --network localhost scripts/deploy.js
+  npx hardhat run --network rinkeby scripts/deploy.js
   ```
 
 ![Secret Variables](https://user-images.githubusercontent.com/68476971/169951589-da24b489-0cb6-44f8-a1fb-f9f02afca154.png)
