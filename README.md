@@ -125,6 +125,10 @@ This is an example of how to list things you need to use the software and how to
   npx hardhat run --network localhost scripts/deploy.js
   npx hardhat test
   ```
+After run the commands terminal should show the tests results....
+
+![name registry](https://user-images.githubusercontent.com/68476971/169948793-4a4cf14b-9346-4a42-a083-563eacbfaaab.png)
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -158,9 +162,9 @@ None
 <!-- CONTACT -->
 ## Contact
 
-Rafiul Hasan -[Solidity](https://docs.soliditylang.org/en/v0.8.14/)
-              [Linkedin](https://www.linkedin.com/in/hrafiul/)
-              [@r_hasan_c](https://twitter.com/r_hasan_c) - rafiulhasan86@gmail.com
+Rafiul Hasan - [Linkedin](https://www.linkedin.com/in/hrafiul/)
+               [Twitter](https://twitter.com/r_hasan_c)
+               - rafiulhasan86@gmail.com
 
 Project Link: [https://github.com/rafiul86/Name-Registry-Smart-Contract](https://github.com/rafiul86/Name-Registry-Smart-Contract)
 
