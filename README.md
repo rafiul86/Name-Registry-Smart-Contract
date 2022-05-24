@@ -65,12 +65,10 @@
 ## About The Project
 
 Front-running and malicious node/validator resistant smart contract, written in Solidity to register vanity names/domains on EVM Blockchains.
-An unregistered name can be registered for a certain amount of time by locking a certain
-balance of an account. After the registration expires, the account loses ownership of the
-name and his balance is unlocked. The registration can be renewed by making an on-chain
-call to keep the name registered and balance locked. The fee to register the name depends directly on the size of the name. Also, a malicious
-node/validator should not be able to front-run the process by censoring transactions of an
-honest user and registering its name in its own account.
+An unregistered name can be registered for a certain amount of time by locking a certain balance of an account. After the registration expires,
+ the account loses ownership of the name and his balance is unlocked. The registration can be renewed by making an on-chain call to keep the 
+ name registered and balance locked. The fee to register the name depends directly on the size of the name. Also, a malicious node/validator 
+ should not be able to front-run the process by censoring transactions of an honest user and registering its name in its own public address.
 
 
 
@@ -80,16 +78,15 @@ honest user and registering its name in its own account.
 
 ### Built With
 
-This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
+* [Solidity](https://docs.soliditylang.org/en/v0.8.14/)
+* [Node.js](https://nodejs.org/en/docs/)
+* [Openzeppelin](https://www.openzeppelin.com/)
+* [Truffle Suite](https://trufflesuite.com/)
+* [Hardhat](https://hardhat.org/)
+* [Ehers.js](https://docs.ethers.io/v5/)
+* [Chai](https://www.npmjs.com/package/chai)
 
-* [Next.js](https://nextjs.org/)
-* [React.js](https://reactjs.org/)
-* [Vue.js](https://vuejs.org/)
-* [Angular](https://angular.io/)
-* [Svelte](https://svelte.dev/)
-* [Laravel](https://laravel.com)
-* [Bootstrap](https://getbootstrap.com)
-* [JQuery](https://jquery.com)
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
