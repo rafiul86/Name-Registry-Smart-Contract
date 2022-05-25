@@ -176,7 +176,7 @@ Change the secret variables as process.env.SECRET_KEY and process.env.ALCHEMY pr
   ```
 
 
-After run the commands in terminal should show the tests results....
+After running the commands in terminal should show the tests results....
 
 
 ![Tests](https://user-images.githubusercontent.com/68476971/169960734-8bad34dc-93ca-40b8-843d-e8e48992d94a.png)
