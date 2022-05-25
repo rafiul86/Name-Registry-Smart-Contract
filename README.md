@@ -156,7 +156,7 @@ This is an example of how to list things you need to use the software and how to
    ```
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-Change the secret variables as process.env.SECRET_KEY and process.env.ALCHEMY provided by API provider if deploy to remote testnet
+Change the secret variables as process.env.SECRET_KEY and process.env.ALCHEMY provided by API provider if deploy to mainnet (Ethereum, Binance, Fantom, Avalanche etc.) or remote testnet(rinkeby, ropsten, goerli etc.)
 
 ```npm install
   npx hardhat compile
