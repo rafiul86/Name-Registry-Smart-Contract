@@ -56,7 +56,7 @@ describe("Vanity Name Registration Service", function () {
 
 
   // 3rd test
-  it("only owner of contract can set operational ststus", async function () {
+  it("only owner of contract can set operational status", async function () {
     await expect(
       GNS.connect(user3).setOpeartionalStatus(true)
     ).to.be.revertedWith("Caller is not owner of registry service");
@@ -147,7 +147,7 @@ describe("Vanity Name Registration Service", function () {
   });
 
   // 10th test
-  it("only owner of contract can withdraw contract balance collect as registration fee from user", async function () {
+  it("only owner of contract can withdraw contract balance collected as registration fee from user", async function () {
     const secretPass = crypto.randomBytes(32);
     const condition = await GNS.connect(user2).generateCondition("genuino", secretPass);
 
